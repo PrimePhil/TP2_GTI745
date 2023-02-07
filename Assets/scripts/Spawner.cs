@@ -1,0 +1,85 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Spawner : MonoBehaviour
+{
+    //Singleton instance of this class
+    public static Spawner Instance { get; private set; }
+
+    //References to planes prefabs
+    public GameObject redPlane;
+    public GameObject greenPlane;
+    public GameObject bluePlane;
+
+    //Turret position
+    private Vector3 turretPosition;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
+    public void setTurretPosition(Vector3 p_turretPosition)
+    {
+        turretPosition = p_turretPosition;
+    }
+
+    public void spawnPlane(GameObject plane)
+    {
+        //create empty object to work with transform
+        GameObject planeSpawnPoint = new GameObject();
+
+        //Random height to add from turret pos
+        float extraHeight = Random.Range(0.5f, 1.5f);
+
+        //Random depth to add from turret pos
+        float extraDepth = Random.Range(0.5f, 1.5f);
+
+        //Create the spawn pos
+        Vector3 planeSpawnPosition = new Vector3(0.0f, this.turretPosition.y + extraHeight, this.turretPosition.z + extraDepth);
+
+        //Set the position of the spawn
+        planeSpawnPoint.transform.position = planeSpawnPosition;
+
+        //Instance the plane at the spawn pos
+        Instantiate(plane, planeSpawnPoint.transform);
+    }
+
+    public void spawnRedPlane()
+    {
+        spawnPlane(redPlane);
+    }
+
+    public void spawnGreenPlane()
+    {
+        spawnPlane(greenPlane);
+    }
+
+    public void spawnBluePlane()
+    {
+        spawnPlane(bluePlane);
+    }
+
+    public void spawnRedPlaneAfterTime(float time)
+    {
+        Invoke("spawnRedPlane", time);
+    }
+
+    public void spawnGreenPlaneAfterTime(float time)
+    {
+        Invoke("spawnGreenPlane", time);
+    }
+
+    public void spawnBluePlaneAfterTime(float time)
+    {
+        Invoke("spawnBluePlane", time);
+    }
+}
